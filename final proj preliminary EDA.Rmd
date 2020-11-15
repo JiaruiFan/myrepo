@@ -1,0 +1,60 @@
+---
+title: "Final Prject Preliminary EDA"
+author: "Jiarui Fan"
+Date: "11/15/2020"
+output: html_notebook
+---
+```{r}
+# clean up R environment
+rm (list = ls())
+# load some packages
+library(tidyverse)
+library(DataComputing)
+library(ggplot2)
+library(tidyr)
+library(lubridate)
+```
+## 1: Which is the Most Popular Ramen Product?
+
+### Data source
+##### Where?
+
+##### Who?
+
+##### When & Why
+
+##### What does a case represent? & How may total cases are available?
+
+##### What variables will be using
+
+
+### Exploration
+
+##### Informative plots
+
+##### Informative statistics
+
+### Preliminary observations & intution 
+
+
+## 2: Which is the most popular video game?
+
+### Data source
+##### Where?
+
+##### Who?
+
+##### When & Why
+
+##### What does a case represent? & How may total cases are available?
+
+##### What variables will be using
+
+
+### Exploration
+
+##### Informative plots
+
+##### Informative statistics
+
+### Preliminary observations & intution 
