@@ -18,7 +18,6 @@ library(lubridate)
 ## 1: Which is the Most Popular Ramen Product?
 
 ### Data source
-[Ramen Ratings | Kaggle](https://www.kaggle.com/residentmario/ramen-ratings)
 
 ```{r}
 RamenFile<- file.choose()
@@ -32,31 +31,91 @@ RamenData<-
 View(RamenData)
 str(RamenData)
 ```
-##### Where?
+##### Where
+[Ramen Ratings | Kaggle](https://www.kaggle.com/residentmario/ramen-ratings)
+This data set is found in Kaggle.
 
-##### Who?
+##### Who & When
+The dataset owner is Aleksey Bilogur, he collected the data and maintained it. The last update is 3 years ago. However, Mr.Bilogur states that"This dataset is republished as-is from the original BIG LIST on https://www.theramenrater.com/."
 
-##### When & Why
+##### Why
+According to the data description, the inspiration is from these questions:
+
+- What ingredients or flavors are most commonly advertised on ramen package labels?
+- How do ramen ratings compare against ratings for other food products (like, say, wine)?
+- How is ramen manufacturing internationally distributed?
 
 ##### What does a case represent? & How may total cases are available?
+One case is a variety of Ramen with a certain brand, certain number of reviews, its style of packaging(Cup/Bowl/Tray), country, star rating(5-point scale), and if it went on Top 10.
+
+```{r}
+RamenData%>%
+  nrow()
+```
+There are 2580 cases available.
 
 ##### What variables will be using
+Since there are only 7 attributes, I am going to use all of them if possible.
 
 
 ### Exploration
 
+##### Informative statistics
+- How many distinct brand are there in the data set
+```{r}
+RamenData%>%
+  group_by(n_distinct(Brand))%>%
+  summarise()
+```
+- How many Ramen scored 4.5 +
+```{r}
+RamenData%>%
+  select(Brand, Stars, Variety, Country)%>%
+  group_by(Brand)%>%
+  filter(Stars>=4.5, Stars != "Unrated")%>%
+  arrange(desc(Stars))
+```
+- How many distinct countries are there?
+```{r}
+RamenData%>%
+  group_by(n_distinct(Country))%>%
+  summarise()
+
+```
+- Ramen with the most reviews.
+```{r}
+RamenData%>%
+  arrange(desc(`Review #`))
+```
 ##### Informative plots
 
-##### Informative statistics
+```{r}
+RamenData%>%
+  ggplot(aes(x = `Review #`, y = Stars))+geom_point(aes(color=Style))
+```
+
+```{r}
+ThreeCountry<- 
+  RamenData%>%
+  filter(Country=="China"| Country=="USA"| Country=="Japan")
+ThreeCountry%>%
+  ggplot(aes(x=`Review #`, y = Stars))+geom_point(aes(color=Style))+facet_wrap(~Country)
+```
 
 ### Preliminary observations & intution 
+From above statistics and plots, here are some of my observations:
+
+* Japan is one of the most Ramen popular country.
+* Ramen with huge number of reviews does not mean it has a high rating.
+* People tend to like packs and trays (worldwide)
+* Ramen in China are more in Pack, Japan and USA have relative more Ramen than China.
+* The most popular Ramen will probobaly appear in either Japan or Malaysia
+
 
 
 ## 2: Which is the most popular video game?
 
 ### Data source
-[Video Games Sales with Ratings | Kaggle](https://www.kaggle.com/rush4ratio/video-game-sales-with-ratings)
-
 ```{r}
 GameFile<- file.choose()
 ```
@@ -70,21 +129,92 @@ View(GameData)
 str(GameData)
 ```
 
-##### Where?
-
-##### Who?
-
-##### When & Why
+##### Where
+[Video Games Sales with Ratings | Kaggle](https://www.kaggle.com/rush4ratio/video-game-sales-with-ratings)
+This data set is found in Kaggle.
+##### Who & When & Why
+This dataset is collected and maintained by Rush Kirubi, and it was updated 4 years ago. According to the data description, this dataset was "Motivated by Gregory Smith's web scrape of VGChartz Video Games Sales, this data set simply extends the number of variables with another web scrape from Metacritic."
 
 ##### What does a case represent? & How may total cases are available?
+A case in this dataset represents a type of video game with its information like platform, genre, publisher... and with its sales in million of units in different areas(North America, European Union, Japan, total sales in the world, etc) also with its scores, counts, and ratings.
+```{r}
+GameData%>%
+  nrow()
+```
+There are 16719 video games in the dataset.
+
 
 ##### What variables will be using
+I will focus on:
+* Name
+* Platform
+* Year_of_Release
+* Genre
+* NA_Sales
+* EU_Sales
+* JP_Sales
+* Other_Sales
+* Global_Sales
+* User_Score
 
 
 ### Exploration
 
-##### Informative plots
+##### Informative statisstics
+- How many distinct platforms are there?
+```{r}
+GameData%>%
+  group_by(n_distinct(Platform))%>%
+  summarise()
+```
+- How many distinct publishers are there?
+```{r}
+GameData%>%
+  group_by(n_distinct(Publisher))%>%
+  summarise()
+```
+- How many distinct genres are there?
+```{r}
+GameData%>%
+  distinct(Genre)
+```
+- Video games which scored 9 +
+```{r}
+GameData%>%
+  select(Name, User_Score, Genre, Publisher)%>%
+  filter(User_Score >= 9, User_Score != "tbd")%>%
+  arrange(desc(User_Score))
+```
+- Popular genre rank
+```{r}
+GameData%>%
+  group_by(Genre)%>%
+  summarise(total = n())%>%
+  arrange(desc(total))
+```
 
-##### Informative statistics
+##### Informative plots
+```{r}
+GameData%>%
+  g
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
 
 ### Preliminary observations & intution 
+
+From above statistics and plots, here are some of my observations:
+
+* 
+* 
+* 
+* 
+* 
+
+
