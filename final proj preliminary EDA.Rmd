@@ -132,6 +132,7 @@ str(GameData)
 ##### Where
 [Video Games Sales with Ratings | Kaggle](https://www.kaggle.com/rush4ratio/video-game-sales-with-ratings)
 This data set is found in Kaggle.
+
 ##### Who & When & Why
 This dataset is collected and maintained by Rush Kirubi, and it was updated 4 years ago. According to the data description, this dataset was "Motivated by Gregory Smith's web scrape of VGChartz Video Games Sales, this data set simply extends the number of variables with another web scrape from Metacritic."
 
