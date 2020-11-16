@@ -230,10 +230,11 @@ summary {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBjbGVhbiB1cCBSIGVudmlyb25tZW50XG5ybSAobGlzdCA9IGxzKCkpXG4jIGxvYWQgc29tZSBwYWNrYWdlc1xubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KERhdGFDb21wdXRpbmcpXG5saWJyYXJ5KGdncGxvdDIpXG5saWJyYXJ5KHRpZHlyKVxubGlicmFyeShsdWJyaWRhdGUpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBjbGVhbiB1cCBSIGVudmlyb25tZW50XG5ybSAobGlzdCA9IGxzKCkpXG4jIGxvYWQgc29tZSBwYWNrYWdlc1xubGlicmFyeShyZWFkcilcbmxpYnJhcnkodGlkeXZlcnNlKVxubGlicmFyeShEYXRhQ29tcHV0aW5nKVxubGlicmFyeShnZ3Bsb3QyKVxubGlicmFyeSh0aWR5cilcbmxpYnJhcnkobHVicmlkYXRlKVxuYGBgIn0= -->
 <pre class="r"><code># clean up R environment
 rm (list = ls())
 # load some packages
+library(readr)
 library(tidyverse)
 library(DataComputing)
 library(ggplot2)
@@ -246,6 +247,37 @@ library(lubridate)</code></pre>
 <h2>1: Which is the Most Popular Ramen Product?</h2>
 <div id="data-source" class="section level3">
 <h3>Data source</h3>
+<p><a href="https://www.kaggle.com/residentmario/ramen-ratings">Ramen Ratings | Kaggle</a></p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUmFtZW5GaWxlPC0gZmlsZS5jaG9vc2UoKVxuYGBgIn0= -->
+<pre class="r"><code>RamenFile&lt;- file.choose()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUmFtZW5EYXRhPC0gXG4gIGRhdGEudGFibGU6OmZyZWFkKFJhbWVuRmlsZSklPiVcbiAgYXMuZGF0YS5mcmFtZSgpXG5gYGAifQ== -->
+<pre class="r"><code>RamenData&lt;- 
+  data.table::fread(RamenFile)%&gt;%
+  as.data.frame()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyhSYW1lbkRhdGEpXG5zdHIoUmFtZW5EYXRhKVxuYGBgIn0= -->
+<pre class="r"><code>View(RamenData)
+str(RamenData)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiJ2RhdGEuZnJhbWUnOlx0MjU4MCBvYnMuIG9mICA3IHZhcmlhYmxlczpcbiAkIFJldmlldyAjOiBpbnQgIDI1ODAgMjU3OSAyNTc4IDI1NzcgMjU3NiAyNTc1IDI1NzQgMjU3MyAyNTcyIDI1NzEgLi4uXG4gJCBCcmFuZCAgIDogY2hyICBcIk5ldyBUb3VjaFwiIFwiSnVzdCBXYXlcIiBcIk5pc3NpblwiIFwiV2VpIExpaFwiIC4uLlxuICQgVmFyaWV0eSA6IGNociAgXCJUJ3MgUmVzdGF1cmFudCBUYW50YW5tZW5cIiBcIk5vb2RsZXMgU3BpY3kgSG90IFNlc2FtZSBTcGljeSBIb3QgU2VzYW1lIEd1YW4tbWlhbyBOb29kbGVzXCIgXCJDdXAgTm9vZGxlcyBDaGlja2VuIFZlZ2V0YWJsZVwiIFwiR0dFIFJhbWVuIFNuYWNrIFRvbWF0byBGbGF2b3JcIiAuLi5cbiAkIFN0eWxlICAgOiBjaHIgIFwiQ3VwXCIgXCJQYWNrXCIgXCJDdXBcIiBcIlBhY2tcIiAuLi5cbiAkIENvdW50cnkgOiBjaHIgIFwiSmFwYW5cIiBcIlRhaXdhblwiIFwiVVNBXCIgXCJUYWl3YW5cIiAuLi5cbiAkIFN0YXJzICAgOiBjaHIgIFwiMy43NVwiIFwiMVwiIFwiMi4yNVwiIFwiMi43NVwiIC4uLlxuICQgVG9wIFRlbiA6IGNociAgXCJcIiBcIlwiIFwiXCIgXCJcIiAuLi5cbiJ9 -->
+<pre><code>'data.frame':   2580 obs. of  7 variables:
+ $ Review #: int  2580 2579 2578 2577 2576 2575 2574 2573 2572 2571 ...
+ $ Brand   : chr  &quot;New Touch&quot; &quot;Just Way&quot; &quot;Nissin&quot; &quot;Wei Lih&quot; ...
+ $ Variety : chr  &quot;T's Restaurant Tantanmen&quot; &quot;Noodles Spicy Hot Sesame Spicy Hot Sesame Guan-miao Noodles&quot; &quot;Cup Noodles Chicken Vegetable&quot; &quot;GGE Ramen Snack Tomato Flavor&quot; ...
+ $ Style   : chr  &quot;Cup&quot; &quot;Pack&quot; &quot;Cup&quot; &quot;Pack&quot; ...
+ $ Country : chr  &quot;Japan&quot; &quot;Taiwan&quot; &quot;USA&quot; &quot;Taiwan&quot; ...
+ $ Stars   : chr  &quot;3.75&quot; &quot;1&quot; &quot;2.25&quot; &quot;2.75&quot; ...
+ $ Top Ten : chr  &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; ...</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <div id="where" class="section level5">
 <h5>Where?</h5>
 </div>
@@ -279,6 +311,27 @@ library(lubridate)</code></pre>
 <h2>2: Which is the most popular video game?</h2>
 <div id="data-source-1" class="section level3">
 <h3>Data source</h3>
+<p><a href="https://www.kaggle.com/rush4ratio/video-game-sales-with-ratings">Video Games Sales with Ratings | Kaggle</a></p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuR2FtZUZpbGU8LSBmaWxlLmNob29zZSgpXG5gYGAifQ== -->
+<pre class="r"><code>GameFile&lt;- file.choose()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuR2FtZURhdGE8LSBcbiAgZGF0YS50YWJsZTo6ZnJlYWQoR2FtZUZpbGUpJT4lXG4gIGFzLmRhdGEuZnJhbWUoKVxuYGBgIn0= -->
+<pre class="r"><code>GameData&lt;- 
+  data.table::fread(GameFile)%&gt;%
+  as.data.frame()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyhHYW1lRGF0YSlcbnN0cihHYW1lRGF0YSlcbmBgYCJ9 -->
+<pre class="r"><code>View(GameData)
+str(GameData)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <div id="where-1" class="section level5">
 <h5>Where?</h5>
 </div>
@@ -310,7 +363,7 @@ library(lubridate)</code></pre>
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRmluYWwgUHJqZWN0IFByZWxpbWluYXJ5IEVEQSIKYXV0aG9yOiAiSmlhcnVpIEZhbiIKRGF0ZTogIjExLzE1LzIwMjAiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KYGBge3J9CiMgY2xlYW4gdXAgUiBlbnZpcm9ubWVudApybSAobGlzdCA9IGxzKCkpCiMgbG9hZCBzb21lIHBhY2thZ2VzCmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KERhdGFDb21wdXRpbmcpCmxpYnJhcnkoZ2dwbG90MikKbGlicmFyeSh0aWR5cikKbGlicmFyeShsdWJyaWRhdGUpCmBgYAojIyAxOiBXaGljaCBpcyB0aGUgTW9zdCBQb3B1bGFyIFJhbWVuIFByb2R1Y3Q/CgojIyMgRGF0YSBzb3VyY2UKIyMjIyMgV2hlcmU/CgojIyMjIyBXaG8/CgojIyMjIyBXaGVuICYgV2h5CgojIyMjIyBXaGF0IGRvZXMgYSBjYXNlIHJlcHJlc2VudD8gJiBIb3cgbWF5IHRvdGFsIGNhc2VzIGFyZSBhdmFpbGFibGU/CgojIyMjIyBXaGF0IHZhcmlhYmxlcyB3aWxsIGJlIHVzaW5nCgoKIyMjIEV4cGxvcmF0aW9uCgojIyMjIyBJbmZvcm1hdGl2ZSBwbG90cwoKIyMjIyMgSW5mb3JtYXRpdmUgc3RhdGlzdGljcwoKIyMjIFByZWxpbWluYXJ5IG9ic2VydmF0aW9ucyAmIGludHV0aW9uIAoKCiMjIDI6IFdoaWNoIGlzIHRoZSBtb3N0IHBvcHVsYXIgdmlkZW8gZ2FtZT8KCiMjIyBEYXRhIHNvdXJjZQojIyMjIyBXaGVyZT8KCiMjIyMjIFdobz8KCiMjIyMjIFdoZW4gJiBXaHkKCiMjIyMjIFdoYXQgZG9lcyBhIGNhc2UgcmVwcmVzZW50PyAmIEhvdyBtYXkgdG90YWwgY2FzZXMgYXJlIGF2YWlsYWJsZT8KCiMjIyMjIFdoYXQgdmFyaWFibGVzIHdpbGwgYmUgdXNpbmcKCgojIyMgRXhwbG9yYXRpb24KCiMjIyMjIEluZm9ybWF0aXZlIHBsb3RzCgojIyMjIyBJbmZvcm1hdGl2ZSBzdGF0aXN0aWNzCgojIyMgUHJlbGltaW5hcnkgb2JzZXJ2YXRpb25zICYgaW50dXRpb24gCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRmluYWwgUHJqZWN0IFByZWxpbWluYXJ5IEVEQSIKYXV0aG9yOiAiSmlhcnVpIEZhbiIKRGF0ZTogIjExLzE1LzIwMjAiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KYGBge3J9CiMgY2xlYW4gdXAgUiBlbnZpcm9ubWVudApybSAobGlzdCA9IGxzKCkpCiMgbG9hZCBzb21lIHBhY2thZ2VzCmxpYnJhcnkocmVhZHIpCmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KERhdGFDb21wdXRpbmcpCmxpYnJhcnkoZ2dwbG90MikKbGlicmFyeSh0aWR5cikKbGlicmFyeShsdWJyaWRhdGUpCmBgYAojIyAxOiBXaGljaCBpcyB0aGUgTW9zdCBQb3B1bGFyIFJhbWVuIFByb2R1Y3Q/CgojIyMgRGF0YSBzb3VyY2UKW1JhbWVuIFJhdGluZ3MgfCBLYWdnbGVdKGh0dHBzOi8vd3d3LmthZ2dsZS5jb20vcmVzaWRlbnRtYXJpby9yYW1lbi1yYXRpbmdzKQoKYGBge3J9ClJhbWVuRmlsZTwtIGZpbGUuY2hvb3NlKCkKYGBgCmBgYHtyfQpSYW1lbkRhdGE8LSAKICBkYXRhLnRhYmxlOjpmcmVhZChSYW1lbkZpbGUpJT4lCiAgYXMuZGF0YS5mcmFtZSgpCmBgYApgYGB7cn0KVmlldyhSYW1lbkRhdGEpCnN0cihSYW1lbkRhdGEpCmBgYAojIyMjIyBXaGVyZT8KCiMjIyMjIFdobz8KCiMjIyMjIFdoZW4gJiBXaHkKCiMjIyMjIFdoYXQgZG9lcyBhIGNhc2UgcmVwcmVzZW50PyAmIEhvdyBtYXkgdG90YWwgY2FzZXMgYXJlIGF2YWlsYWJsZT8KCiMjIyMjIFdoYXQgdmFyaWFibGVzIHdpbGwgYmUgdXNpbmcKCgojIyMgRXhwbG9yYXRpb24KCiMjIyMjIEluZm9ybWF0aXZlIHBsb3RzCgojIyMjIyBJbmZvcm1hdGl2ZSBzdGF0aXN0aWNzCgojIyMgUHJlbGltaW5hcnkgb2JzZXJ2YXRpb25zICYgaW50dXRpb24gCgoKIyMgMjogV2hpY2ggaXMgdGhlIG1vc3QgcG9wdWxhciB2aWRlbyBnYW1lPwoKIyMjIERhdGEgc291cmNlCltWaWRlbyBHYW1lcyBTYWxlcyB3aXRoIFJhdGluZ3MgfCBLYWdnbGVdKGh0dHBzOi8vd3d3LmthZ2dsZS5jb20vcnVzaDRyYXRpby92aWRlby1nYW1lLXNhbGVzLXdpdGgtcmF0aW5ncykKCmBgYHtyfQpHYW1lRmlsZTwtIGZpbGUuY2hvb3NlKCkKYGBgCmBgYHtyfQpHYW1lRGF0YTwtIAogIGRhdGEudGFibGU6OmZyZWFkKEdhbWVGaWxlKSU+JQogIGFzLmRhdGEuZnJhbWUoKQpgYGAKYGBge3J9ClZpZXcoR2FtZURhdGEpCnN0cihHYW1lRGF0YSkKYGBgCgojIyMjIyBXaGVyZT8KCiMjIyMjIFdobz8KCiMjIyMjIFdoZW4gJiBXaHkKCiMjIyMjIFdoYXQgZG9lcyBhIGNhc2UgcmVwcmVzZW50PyAmIEhvdyBtYXkgdG90YWwgY2FzZXMgYXJlIGF2YWlsYWJsZT8KCiMjIyMjIFdoYXQgdmFyaWFibGVzIHdpbGwgYmUgdXNpbmcKCgojIyMgRXhwbG9yYXRpb24KCiMjIyMjIEluZm9ybWF0aXZlIHBsb3RzCgojIyMjIyBJbmZvcm1hdGl2ZSBzdGF0aXN0aWNzCgojIyMgUHJlbGltaW5hcnkgb2JzZXJ2YXRpb25zICYgaW50dXRpb24gCg==</div>
 
 
 

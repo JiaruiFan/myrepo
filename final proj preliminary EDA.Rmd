@@ -8,6 +8,7 @@ output: html_notebook
 # clean up R environment
 rm (list = ls())
 # load some packages
+library(readr)
 library(tidyverse)
 library(DataComputing)
 library(ggplot2)
@@ -17,6 +18,20 @@ library(lubridate)
 ## 1: Which is the Most Popular Ramen Product?
 
 ### Data source
+[Ramen Ratings | Kaggle](https://www.kaggle.com/residentmario/ramen-ratings)
+
+```{r}
+RamenFile<- file.choose()
+```
+```{r}
+RamenData<- 
+  data.table::fread(RamenFile)%>%
+  as.data.frame()
+```
+```{r}
+View(RamenData)
+str(RamenData)
+```
 ##### Where?
 
 ##### Who?
@@ -40,6 +55,21 @@ library(lubridate)
 ## 2: Which is the most popular video game?
 
 ### Data source
+[Video Games Sales with Ratings | Kaggle](https://www.kaggle.com/rush4ratio/video-game-sales-with-ratings)
+
+```{r}
+GameFile<- file.choose()
+```
+```{r}
+GameData<- 
+  data.table::fread(GameFile)%>%
+  as.data.frame()
+```
+```{r}
+View(GameData)
+str(GameData)
+```
+
 ##### Where?
 
 ##### Who?
