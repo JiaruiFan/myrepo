@@ -196,25 +196,44 @@ GameData%>%
 ##### Informative plots
 ```{r}
 GameData%>%
-  g
+  ggplot(aes(x=NA_Sales, y = Platform))+geom_point(aes(color=Genre))
+```
+```{r}
+GameData%>%
+  ggplot(aes(x=JP_Sales, y = Platform))+geom_point(aes(color=Genre))
+```
+```{r}
+GameData%>%
+  ggplot(aes(x=EU_Sales, y = Platform))+geom_point(aes(color=Genre))
 ```
 
 ```{r}
-
+year2012<-
+  GameData%>%
+  filter(Year_of_Release == 2012)
+year2012%>%
+  ggplot(aes(x=Global_Sales, y = Platform))+geom_point(aes(color=Genre))
 ```
 
 ```{r}
-
+SalesWinners<-
+  GameData%>%
+  filter(Global_Sales>=10)
+SalesWinners%>%
+  ggplot(aes(x=Global_Sales, y = User_Score))+geom_point(aes(color=Genre))
 ```
 
 ### Preliminary observations & intution 
 
 From above statistics and plots, here are some of my observations:
 
-* 
-* 
-* 
-* 
-* 
+* Action & Role-playing Genre tends to receive higher User_score.
+* Action is the most popular genre according to the quantity.
+* North America & Eurpean Union have a evenly distributed genre of games in different platforms.
+* Japan has more sales on Role-playing vedio games.
+* In the year of 2012, X360 and PS3 are the most popular plotform, and shooter games won the competition.
+* For video games with high sales, Action & Racing genre tends to score higher, and shooter games tends to score lower.
+
+
 
 
