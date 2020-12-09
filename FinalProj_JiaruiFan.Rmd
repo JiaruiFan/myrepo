@@ -65,8 +65,78 @@ head(TableOfBrands)
 ```
 
 ### Data Wrangling
+```{r}
+RamenData <-
+  RamenData%>%
+  select(`Review #`, Brand, Variety, Style, Country, Stars)
+```
+```{r}
+TableOfBrands<-
+  TableOfBrands%>%
+  select(Name, Currentowner)
+```
 
+```{r}
+BigBrands<-
+  RamenData%>%
+  inner_join(TableOfBrands, by = c("Brand" = "Name"))
+```
 
+```{r}
+BigBrands
+```
+```{r}
+ByStars<-
+  BigBrands%>%
+  select(Brand, Stars, Variety)%>%
+  group_by(Brand)%>%
+  filter(Stars>=4.5, Stars != "Unrated")%>%
+  arrange(desc(Stars))
+```
+```{r}
+ByReview<-
+  BigBrands%>%
+  filter(`Review #`>=2000)%>%
+  select(Variety, Country,Style,`Review #`)
+```
+```{r}
+Reviews_Satrs<-
+  ByStars%>%
+  full_join(ByReview, by= "Variety")
+Reviews_Satrs
+```
 
+```{r}
+ThreeCountry<- 
+  Reviews_Satrs%>%
+  filter(Country=="Indonesia"| Country=="USA"| Country=="Japan", Stars != "NA")
+ThreeCountry%>%
+  ggplot(aes(x=`Review #`, y = Stars))+geom_point(aes(color=Style))+facet_wrap(~Country)
+```
+```{r}
 
+```
 
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
