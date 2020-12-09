@@ -4,7 +4,7 @@ author: "Jiarui Fan"
 date: "12/12"
 output: html_notebook
 ---
-```{r}
+```{r, warning=FALSE, message=FALSE}
 # clean up R environment
 rm (list = ls())
 # load some packages
@@ -15,3 +15,30 @@ library(ggplot2)
 library(tidyr)
 library(lubridate)
 ```
+
+## 1: Which is the Most Popular Ramen Product?
+
+### Data source
+
+```{r}
+RamenFile<- file.choose()
+```
+```{r}
+RamenData<- 
+  data.table::fread(RamenFile) %>%
+  as.data.frame()
+```
+```{r}
+str(RamenData)
+```
+```{r}
+head(RamenData)
+```
+```{r}
+Ramen <- 
+  RamenData%>%
+  select()
+```
+
+
+

@@ -243,8 +243,57 @@ library(tidyr)
 library(lubridate)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="which-is-the-most-popular-ramen-product" class="section level2">
+<h2>1: Which is the Most Popular Ramen Product?</h2>
+<div id="data-source" class="section level3">
+<h3>Data source</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUmFtZW5GaWxlPC0gZmlsZS5jaG9vc2UoKVxuYGBgIn0= -->
+<pre class="r"><code>RamenFile&lt;- file.choose()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUmFtZW5EYXRhPC0gXG4gIGRhdGEudGFibGU6OmZyZWFkKFJhbWVuRmlsZSkgJT4lXG4gIGFzLmRhdGEuZnJhbWUoKVxuYGBgIn0= -->
+<pre class="r"><code>RamenData&lt;- 
+  data.table::fread(RamenFile) %&gt;%
+  as.data.frame()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKFJhbWVuRGF0YSlcbmBgYCJ9 -->
+<pre class="r"><code>str(RamenData)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiJ2RhdGEuZnJhbWUnOlx0MjU4MCBvYnMuIG9mICA3IHZhcmlhYmxlczpcbiAkIFJldmlldyAjOiBpbnQgIDI1ODAgMjU3OSAyNTc4IDI1NzcgMjU3NiAyNTc1IDI1NzQgMjU3MyAyNTcyIDI1NzEgLi4uXG4gJCBCcmFuZCAgIDogY2hyICBcIk5ldyBUb3VjaFwiIFwiSnVzdCBXYXlcIiBcIk5pc3NpblwiIFwiV2VpIExpaFwiIC4uLlxuICQgVmFyaWV0eSA6IGNociAgXCJUJ3MgUmVzdGF1cmFudCBUYW50YW5tZW5cIiBcIk5vb2RsZXMgU3BpY3kgSG90IFNlc2FtZSBTcGljeSBIb3QgU2VzYW1lIEd1YW4tbWlhbyBOb29kbGVzXCIgXCJDdXAgTm9vZGxlcyBDaGlja2VuIFZlZ2V0YWJsZVwiIFwiR0dFIFJhbWVuIFNuYWNrIFRvbWF0byBGbGF2b3JcIiAuLi5cbiAkIFN0eWxlICAgOiBjaHIgIFwiQ3VwXCIgXCJQYWNrXCIgXCJDdXBcIiBcIlBhY2tcIiAuLi5cbiAkIENvdW50cnkgOiBjaHIgIFwiSmFwYW5cIiBcIlRhaXdhblwiIFwiVVNBXCIgXCJUYWl3YW5cIiAuLi5cbiAkIFN0YXJzICAgOiBjaHIgIFwiMy43NVwiIFwiMVwiIFwiMi4yNVwiIFwiMi43NVwiIC4uLlxuICQgVG9wIFRlbiA6IGNociAgXCJcIiBcIlwiIFwiXCIgXCJcIiAuLi5cbiJ9 -->
+<pre><code>'data.frame':   2580 obs. of  7 variables:
+ $ Review #: int  2580 2579 2578 2577 2576 2575 2574 2573 2572 2571 ...
+ $ Brand   : chr  &quot;New Touch&quot; &quot;Just Way&quot; &quot;Nissin&quot; &quot;Wei Lih&quot; ...
+ $ Variety : chr  &quot;T's Restaurant Tantanmen&quot; &quot;Noodles Spicy Hot Sesame Spicy Hot Sesame Guan-miao Noodles&quot; &quot;Cup Noodles Chicken Vegetable&quot; &quot;GGE Ramen Snack Tomato Flavor&quot; ...
+ $ Style   : chr  &quot;Cup&quot; &quot;Pack&quot; &quot;Cup&quot; &quot;Pack&quot; ...
+ $ Country : chr  &quot;Japan&quot; &quot;Taiwan&quot; &quot;USA&quot; &quot;Taiwan&quot; ...
+ $ Stars   : chr  &quot;3.75&quot; &quot;1&quot; &quot;2.25&quot; &quot;2.75&quot; ...
+ $ Top Ten : chr  &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; ...</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChSYW1lbkRhdGEpXG5gYGAifQ== -->
+<pre class="r"><code>head(RamenData)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUmFtZW4gPC0gXG4gIFJhbWVuRGF0YSU+JVxuICBzZWxlY3QoKVxuYGBgIn0= -->
+<pre class="r"><code>Ramen &lt;- 
+  RamenData%&gt;%
+  select()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+</div>
+</div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiU1RBVCAxODQgRmluYWwgUHJvamVjdCAiCmF1dGhvcjogIkppYXJ1aSBGYW4iIApkYXRlOiAiMTIvMTIiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KYGBge3J9CiMgY2xlYW4gdXAgUiBlbnZpcm9ubWVudApybSAobGlzdCA9IGxzKCkpCiMgbG9hZCBzb21lIHBhY2thZ2VzCmxpYnJhcnkocmVhZHIpCmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KERhdGFDb21wdXRpbmcpCmxpYnJhcnkoZ2dwbG90MikKbGlicmFyeSh0aWR5cikKbGlicmFyeShsdWJyaWRhdGUpCmBgYA==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU1RBVCAxODQgRmluYWwgUHJvamVjdCAiCmF1dGhvcjogIkppYXJ1aSBGYW4iIApkYXRlOiAiMTIvMTIiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KYGBge3IsIHdhcm5pbmc9RkFMU0UsIG1lc3NhZ2U9RkFMU0V9CiMgY2xlYW4gdXAgUiBlbnZpcm9ubWVudApybSAobGlzdCA9IGxzKCkpCiMgbG9hZCBzb21lIHBhY2thZ2VzCmxpYnJhcnkocmVhZHIpCmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KERhdGFDb21wdXRpbmcpCmxpYnJhcnkoZ2dwbG90MikKbGlicmFyeSh0aWR5cikKbGlicmFyeShsdWJyaWRhdGUpCmBgYAoKIyMgMTogV2hpY2ggaXMgdGhlIE1vc3QgUG9wdWxhciBSYW1lbiBQcm9kdWN0PwoKIyMjIERhdGEgc291cmNlCgpgYGB7cn0KUmFtZW5GaWxlPC0gZmlsZS5jaG9vc2UoKQpgYGAKYGBge3J9ClJhbWVuRGF0YTwtIAogIGRhdGEudGFibGU6OmZyZWFkKFJhbWVuRmlsZSkgJT4lCiAgYXMuZGF0YS5mcmFtZSgpCmBgYApgYGB7cn0Kc3RyKFJhbWVuRGF0YSkKYGBgCmBgYHtyfQpoZWFkKFJhbWVuRGF0YSkKYGBgCmBgYHtyfQpSYW1lbiA8LSAKICBSYW1lbkRhdGElPiUKICBzZWxlY3QoKQpgYGAKCgoK</div>
 
 
 
