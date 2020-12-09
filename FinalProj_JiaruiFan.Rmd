@@ -107,10 +107,10 @@ Reviews_Satrs
 ```
 
 ```{r}
-ThreeCountry<- 
+TwoCountry<- 
   Reviews_Satrs%>%
-  filter(Country=="Indonesia"| Country=="USA"| Country=="Japan", Stars != "NA")
-ThreeCountry%>%
+  filter(Country=="USA"| Country=="Japan", Stars != "NA")
+TwoCountry%>%
   ggplot(aes(x=`Review #`, y = Stars))+geom_point(aes(color=Style))+facet_wrap(~Country)
 ```
 ```{r}
