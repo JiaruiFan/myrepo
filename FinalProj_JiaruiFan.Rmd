@@ -9,6 +9,8 @@ output: html_notebook
 rm (list = ls())
 # load some packages
 library(readr)
+library(rvest)
+library(xml2)
 library(tidyverse)
 library(DataComputing)
 library(ggplot2)
@@ -18,7 +20,8 @@ library(lubridate)
 
 ## 1: Which is the Most Popular Ramen Product?
 
-### Data source
+### Data Access
+#### Primary data
 
 ```{r}
 RamenFile<- file.choose()
@@ -35,10 +38,35 @@ str(RamenData)
 head(RamenData)
 ```
 ```{r}
-Ramen <- 
-  RamenData%>%
-  select()
+RamenData%>%
+  group_by(n_distinct(Brand))%>%
+  summarise()
+
 ```
+#### Supporting data
+```{r}
+web_page <- "https://en.wikipedia.org/wiki/List_of_instant_noodle_brands"
+SetOfTables <- web_page %>%
+  read_html() %>%
+  html_nodes(css = "table") %>%
+  html_table(fill = TRUE)
+```
+```{r}
+length(SetOfTables)
+```
+```{r}
+TableOfBrands <- SetOfTables[[1]]
+```
+```{r}
+str(TableOfBrands)
+```
+```{r}
+head(TableOfBrands)
+```
+
+### Data Wrangling
+
+
 
 
 

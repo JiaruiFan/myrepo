@@ -231,11 +231,13 @@ summary {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBjbGVhbiB1cCBSIGVudmlyb25tZW50XG5ybSAobGlzdCA9IGxzKCkpXG4jIGxvYWQgc29tZSBwYWNrYWdlc1xubGlicmFyeShyZWFkcilcbmxpYnJhcnkodGlkeXZlcnNlKVxubGlicmFyeShEYXRhQ29tcHV0aW5nKVxubGlicmFyeShnZ3Bsb3QyKVxubGlicmFyeSh0aWR5cilcbmxpYnJhcnkobHVicmlkYXRlKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBjbGVhbiB1cCBSIGVudmlyb25tZW50XG5ybSAobGlzdCA9IGxzKCkpXG4jIGxvYWQgc29tZSBwYWNrYWdlc1xubGlicmFyeShyZWFkcilcbmxpYnJhcnkocnZlc3QpXG5saWJyYXJ5KHhtbDIpXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbmxpYnJhcnkoRGF0YUNvbXB1dGluZylcbmxpYnJhcnkoZ2dwbG90MilcbmxpYnJhcnkodGlkeXIpXG5saWJyYXJ5KGx1YnJpZGF0ZSlcbmBgYCJ9 -->
 <pre class="r"><code># clean up R environment
 rm (list = ls())
 # load some packages
 library(readr)
+library(rvest)
+library(xml2)
 library(tidyverse)
 library(DataComputing)
 library(ggplot2)
@@ -246,8 +248,10 @@ library(lubridate)</code></pre>
 <!-- rnb-text-begin -->
 <div id="which-is-the-most-popular-ramen-product" class="section level2">
 <h2>1: Which is the Most Popular Ramen Product?</h2>
-<div id="data-source" class="section level3">
-<h3>Data source</h3>
+<div id="data-access" class="section level3">
+<h3>Data Access</h3>
+<div id="primary-data" class="section level4">
+<h4>Primary data</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUmFtZW5GaWxlPC0gZmlsZS5jaG9vc2UoKVxuYGBgIn0= -->
@@ -280,20 +284,89 @@ library(lubridate)</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChSYW1lbkRhdGEpXG5gYGAifQ== -->
 <pre class="r"><code>head(RamenData)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6Nn0sInJkZiI6IlVrUllNZ3BZQ2dBQUFBSUFBd1FCQUFJREFBQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFjQUFBQU5BQUFBQmdBQUNoUUFBQW9UQUFBS0VnQUFDaEVBQUFvUUFBQUtEd0FBQUJBQUFBQUdBQVFBQ1FBQUFBbE9aWGNnVkc5MVkyZ0FCQUFKQUFBQUNFcDFjM1FnVjJGNUFBUUFDUUFBQUFaT2FYTnphVzRBQkFBSkFBQUFCMWRsYVNCTWFXZ0FCQUFKQUFBQURrTm9hVzVuSjNNZ1UyVmpjbVYwQUFRQUNRQUFBQTFUWVcxNVlXNW5JRVp2YjJSekFBQUFFQUFBQUFZQUJBQUpBQUFBR0ZRbmN5QlNaWE4wWVhWeVlXNTBJRlJoYm5SaGJtMWxiZ0FFQUFrQUFBQTdUbTl2Wkd4bGN5QlRjR2xqZVNCSWIzUWdVMlZ6WVcxbElGTndhV041SUVodmRDQlRaWE5oYldVZ1IzVmhiaTF0YVdGdklFNXZiMlJzWlhNQUJBQUpBQUFBSFVOMWNDQk9iMjlrYkdWeklFTm9hV05yWlc0Z1ZtVm5aWFJoWW14bEFBUUFDUUFBQUIxSFIwVWdVbUZ0Wlc0Z1UyNWhZMnNnVkc5dFlYUnZJRVpzWVhadmNnQUVBQWtBQUFBUFUybHVaMkZ3YjNKbElFTjFjbko1QUFRQUNRQUFBQlpMYVcxamFHa2djMjl1WnlCVGIyNW5JRkpoYldWdUFBQUFFQUFBQUFZQUJBQUpBQUFBQTBOMWNBQUVBQWtBQUFBRVVHRmphd0FFQUFrQUFBQURRM1Z3QUFRQUNRQUFBQVJRWVdOckFBUUFDUUFBQUFSUVlXTnJBQVFBQ1FBQUFBUlFZV05yQUFBQUVBQUFBQVlBQkFBSkFBQUFCVXBoY0dGdUFBUUFDUUFBQUFaVVlXbDNZVzRBQkFBSkFBQUFBMVZUUVFBRUFBa0FBQUFHVkdGcGQyRnVBQVFBQ1FBQUFBVkpibVJwWVFBRUFBa0FBQUFMVTI5MWRHZ2dTMjl5WldFQUFBQVFBQUFBQmdBRUFBa0FBQUFFTXk0M05RQUVBQWtBQUFBQk1RQUVBQWtBQUFBRU1pNHlOUUFFQUFrQUFBQUVNaTQzTlFBRUFBa0FBQUFFTXk0M05RQUVBQWtBQUFBRU5DNDNOUUFBQUJBQUFBQUdBQVFBQ1FBQUFBQUFCQUFKQUFBQUFBQUVBQWtBQUFBQUFBUUFDUUFBQUFBQUJBQUpBQUFBQUFBRUFBa0FBQUFBQUFBRUFnQUFBQUVBQkFBSkFBQUFCVzVoYldWekFBQUFFQUFBQUFjQUJBQUpBQUFBQ0ZKbGRtbGxkeUFqQUFRQUNRQUFBQVZDY21GdVpBQUVBQWtBQUFBSFZtRnlhV1YwZVFBRUFBa0FBQUFGVTNSNWJHVUFCQUFKQUFBQUIwTnZkVzUwY25rQUJBQUpBQUFBQlZOMFlYSnpBQVFBQ1FBQUFBZFViM0FnVkdWdUFBQUVBZ0FBQUFFQUJBQUpBQUFBQ1hKdmR5NXVZVzFsY3dBQUFBMEFBQUFDZ0FBQUFBQUFBQVlBQUFRQ0FBQUFBUUFFQUFrQUFBQUZZMnhoYzNNQUFBQVFBQUFBQVFBRUFBa0FBQUFLWkdGMFlTNW1jbUZ0WlFBQUFQNEFBQVFDQUFBQUFRQUVBQWtBQUFBSGIzQjBhVzl1Y3dBQUFoTUFBQUFGQUFBQUVBQUFBQUVBQkFBSkFBQUFBWElBQUFBUUFBQUFBUUFFQUFrQUFBQVFkVzV1WVcxbFpDMWphSFZ1YXkweU13QUFBQW9BQUFBQkFBQUFBUUFBQUEwQUFBQUJBQUFBQmdBQUFBMEFBQUFCQUFBQUJ3QUFCQUlBQUFML0FBQUFFQUFBQUFVQUJBQUpBQUFBQm1WdVoybHVaUUFFQUFrQUFBQUZiR0ZpWld3QUJBQUpBQUFBRG5KdmQyNWhiV1Z6TG5CeWFXNTBBQVFBQ1FBQUFBcHliM2R6TG5SdmRHRnNBQVFBQ1FBQUFBcGpiMnh6TG5SdmRHRnNBQUFBL2dBQUFQND0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Review #"],"name":[1],"type":["int"],"align":["right"]},{"label":["Brand"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Variety"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Style"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Country"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Stars"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Top Ten"],"name":[7],"type":["chr"],"align":["left"]}],"data":[{"1":"2580","2":"New Touch","3":"T's Restaurant Tantanmen","4":"Cup","5":"Japan","6":"3.75","7":"","_rn_":"1"},{"1":"2579","2":"Just Way","3":"Noodles Spicy Hot Sesame Spicy Hot Sesame Guan-miao Noodles","4":"Pack","5":"Taiwan","6":"1","7":"","_rn_":"2"},{"1":"2578","2":"Nissin","3":"Cup Noodles Chicken Vegetable","4":"Cup","5":"USA","6":"2.25","7":"","_rn_":"3"},{"1":"2577","2":"Wei Lih","3":"GGE Ramen Snack Tomato Flavor","4":"Pack","5":"Taiwan","6":"2.75","7":"","_rn_":"4"},{"1":"2576","2":"Ching's Secret","3":"Singapore Curry","4":"Pack","5":"India","6":"3.75","7":"","_rn_":"5"},{"1":"2575","2":"Samyang Foods","3":"Kimchi song Song Ramen","4":"Pack","5":"South Korea","6":"4.75","7":"","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUmFtZW4gPC0gXG4gIFJhbWVuRGF0YSU+JVxuICBzZWxlY3QoKVxuYGBgIn0= -->
-<pre class="r"><code>Ramen &lt;- 
-  RamenData%&gt;%
-  select()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUmFtZW5EYXRhJT4lXG4gIGdyb3VwX2J5KG5fZGlzdGluY3QoQnJhbmQpKSU+JVxuICBzdW1tYXJpc2UoKVxuYGBgIn0= -->
+<pre class="r"><code>RamenData%&gt;%
+  group_by(n_distinct(Brand))%&gt;%
+  summarise()</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MSwibnJvdyI6MX0sInJkZiI6IlVrUllNZ3BZQ2dBQUFBSUFBd1FCQUFJREFBQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFFQUFBQU5BQUFBQVFBQUFXTUFBQVFDQUFBQUFRQUVBQWtBQUFBRmJtRnRaWE1BQUFBUUFBQUFBUUFFQUFrQUFBQVJibDlrYVhOMGFXNWpkQ2hDY21GdVpDa0FBQVFDQUFBQUFRQUVBQWtBQUFBRlkyeGhjM01BQUFBUUFBQUFBUUFFQUFrQUFBQUtaR0YwWVM1bWNtRnRaUUFBQkFJQUFBQUJBQVFBQ1FBQUFBbHliM2N1Ym1GdFpYTUFBQUFOQUFBQUFvQUFBQUQvLy8vL0FBQUEvZ0FBQkFJQUFBQUJBQVFBQ1FBQUFBZHZjSFJwYjI1ekFBQUNFd0FBQUFVQUFBQVFBQUFBQVFBRUFBa0FBQUFCY2dBQUFCQUFBQUFCQUFRQUNRQUFBQkIxYm01aGJXVmtMV05vZFc1ckxUSTBBQUFBQ2dBQUFBRUFBQUFBQUFBQURRQUFBQUVBQUFBQkFBQUFEUUFBQUFFQUFBQUJBQUFFQWdBQUF2OEFBQUFRQUFBQUJRQUVBQWtBQUFBR1pXNW5hVzVsQUFRQUNRQUFBQVZzWVdKbGJBQUVBQWtBQUFBT2NtOTNibUZ0WlhNdWNISnBiblFBQkFBSkFBQUFDbkp2ZDNNdWRHOTBZV3dBQkFBSkFBQUFDbU52YkhNdWRHOTBZV3dBQUFEK0FBQUEvZz09In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["n_distinct(Brand)"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"355"}],"options":{"columns":{"min":{},"max":[10],"total":[1]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="supporting-data" class="section level4">
+<h4>Supporting data</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud2ViX3BhZ2UgPC0gXCJodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9MaXN0X29mX2luc3RhbnRfbm9vZGxlX2JyYW5kc1wiXG5TZXRPZlRhYmxlcyA8LSB3ZWJfcGFnZSAlPiVcbiAgcmVhZF9odG1sKCkgJT4lXG4gIGh0bWxfbm9kZXMoY3NzID0gXCJ0YWJsZVwiKSAlPiVcbiAgaHRtbF90YWJsZShmaWxsID0gVFJVRSlcbmBgYCJ9 -->
+<pre class="r"><code>web_page &lt;- &quot;https://en.wikipedia.org/wiki/List_of_instant_noodle_brands&quot;
+SetOfTables &lt;- web_page %&gt;%
+  read_html() %&gt;%
+  html_nodes(css = &quot;table&quot;) %&gt;%
+  html_table(fill = TRUE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGVuZ3RoKFNldE9mVGFibGVzKVxuYGBgIn0= -->
+<pre class="r"><code>length(SetOfTables)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDVcbiJ9 -->
+<pre><code>[1] 5</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVGFibGVPZkJyYW5kcyA8LSBTZXRPZlRhYmxlc1tbMV1dXG5gYGAifQ== -->
+<pre class="r"><code>TableOfBrands &lt;- SetOfTables[[1]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKFRhYmxlT2ZCcmFuZHMpXG5gYGAifQ== -->
+<pre class="r"><code>str(TableOfBrands)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiJ2RhdGEuZnJhbWUnOlx0NjEgb2JzLiBvZiAgNCB2YXJpYWJsZXM6XG4gJCBOYW1lICAgICAgICA6IGNociAgXCJBQkNcIiBcIkFjZWNvb2tcIiBcIkHDr2tpIG5vb2RsZXNcIiBcIkFsaGFtaVwiIC4uLlxuICQgUGljdHVyZSAgICAgOiBsb2dpICBOQSBOQSBOQSBOQSBOQSBOQSAuLi5cbiAkIEN1cnJlbnRvd25lcjogY2hyICBcIkFCQyBQcmVzaWRlbnRcIiBcIkFjZWNvb2tcIiBcIkNvbnRpbmVudGFsIGZvb2RzXCIgXCJPbGFnYWZvb2RcIiAuLi5cbiAkIERlc2NyaXB0aW9uIDogY2hyICBcIkJyYW5kIGluIEluZG9uZXNpYS5cIiBcIkxhcmdlc3QgaW5zdGFudCBub29kbGUgYnJhbmQgaW4gVmlldG5hbVsyXVwiIFwiUG9wdWxhciBpbnN0YW50IG5vb2RsZXMgaW4gQmVsZ2l1bS5cIiBcIkJyYW5kIGluIEluZG9uZXNpYS5cIiAuLi5cbiJ9 -->
+<pre><code>'data.frame':   61 obs. of  4 variables:
+ $ Name        : chr  &quot;ABC&quot; &quot;Acecook&quot; &quot;Aïki noodles&quot; &quot;Alhami&quot; ...
+ $ Picture     : logi  NA NA NA NA NA NA ...
+ $ Currentowner: chr  &quot;ABC President&quot; &quot;Acecook&quot; &quot;Continental foods&quot; &quot;Olagafood&quot; ...
+ $ Description : chr  &quot;Brand in Indonesia.&quot; &quot;Largest instant noodle brand in Vietnam[2]&quot; &quot;Popular instant noodles in Belgium.&quot; &quot;Brand in Indonesia.&quot; ...</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChUYWJsZU9mQnJhbmRzKVxuYGBgIn0= -->
+<pre class="r"><code>head(TableOfBrands)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NCwibnJvdyI6Nn0sInJkZiI6IlVrUllNZ3BZQ2dBQUFBSUFBd1FCQUFJREFBQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFRQUFBQVFBQUFBQmdBRUFBa0FBQUFEUVVKREFBUUFDUUFBQUFkQlkyVmpiMjlyQUFDQUNRQUFBQTFCdzY5cmFTQnViMjlrYkdWekFBUUFDUUFBQUFaQmJHaGhiV2tBQkFBSkFBQUFEa0Z1YzNWdVozUmhibWR0ZVhWdUFBUUFDUUFBQUJkQ2RXbDBiMjVwSUVsdWMzUmhiblFnVG05dlpHeGxjd0FBQUFvQUFBQUdnQUFBQUlBQUFBQ0FBQUFBZ0FBQUFJQUFBQUNBQUFBQUFBQUFFQUFBQUFZQUJBQUpBQUFBRFVGQ1F5QlFjbVZ6YVdSbGJuUUFCQUFKQUFBQUIwRmpaV052YjJzQUJBQUpBQUFBRVVOdmJuUnBibVZ1ZEdGc0lHWnZiMlJ6QUFRQUNRQUFBQWxQYkdGbllXWnZiMlFBQkFBSkFBQUFDRTV2Ym1kemFHbHRBQVFBQ1FBQUFBZENkV2wwYjI1cEFBQUFFQUFBQUFZQUJBQUpBQUFBRTBKeVlXNWtJR2x1SUVsdVpHOXVaWE5wWVM0QUJBQUpBQUFBS2t4aGNtZGxjM1FnYVc1emRHRnVkQ0J1YjI5a2JHVWdZbkpoYm1RZ2FXNGdWbWxsZEc1aGJWc3lYUUFFQUFrQUFBQWpVRzl3ZFd4aGNpQnBibk4wWVc1MElHNXZiMlJzWlhNZ2FXNGdRbVZzWjJsMWJTNEFCQUFKQUFBQUUwSnlZVzVrSUdsdUlFbHVaRzl1WlhOcFlTNEFCQUFKQUFBQWhFSnlZVzVrSUc5bUlISmhiWGxsYjI0Z2NISnZaSFZqWldRZ2FXNGdVMjkxZEdnZ1MyOXlaV0VnYzJsdVkyVWdNVGs0TXl3Z1lXNWtJR2x6SUhSb1pTQjBhR2x5WkNCb2FXZG9aWE4wTFhObGJHeHBibWNnWW5KaGJtUWdiMllnYm05dlpHeGxjeUJwYmlCVGIzVjBhQ0JMYjNKbFlTQmhjeUJ2WmlBeU1ERTBMbHN6WFFBQWdBa0FBQUJKU1hSaGJHbGhiaUJpY21GdVpDQnZkMjVsWkNCaWVTQk9aWE4wYk1PcExDQnViM2NnYzI5c1pDQjFibVJsY2lCMGFHVWdibUZ0WlNCTllXZG5hU0JPYjI5a2JHVnpMbHMwWFFBQUJBSUFBQUFCQUFRQUNRQUFBQVZ1WVcxbGN3QUFBQkFBQUFBRUFBUUFDUUFBQUFST1lXMWxBQVFBQ1FBQUFBZFFhV04wZFhKbEFBUUFDUUFBQUF4RGRYSnlaVzUwYjNkdVpYSUFCQUFKQUFBQUMwUmxjMk55YVhCMGFXOXVBQUFFQWdBQUFBRUFCQUFKQUFBQUNYSnZkeTV1WVcxbGN3QUFBQTBBQUFBQ2dBQUFBQUFBQUFZQUFBUUNBQUFBQVFBRUFBa0FBQUFGWTJ4aGMzTUFBQUFRQUFBQUFRQUVBQWtBQUFBS1pHRjBZUzVtY21GdFpRQUFBUDRBQUFRQ0FBQUFBUUFFQUFrQUFBQUhiM0IwYVc5dWN3QUFBaE1BQUFBRkFBQUFFQUFBQUFFQUJBQUpBQUFBQVhJQUFBQVFBQUFBQVFBRUFBa0FBQUFRZFc1dVlXMWxaQzFqYUhWdWF5MHpPQUFBQUFvQUFBQUJBQUFBQVFBQUFBMEFBQUFCQUFBQUJnQUFBQTBBQUFBQkFBQUFCQUFBQkFJQUFBTC9BQUFBRUFBQUFBVUFCQUFKQUFBQUJtVnVaMmx1WlFBRUFBa0FBQUFGYkdGaVpXd0FCQUFKQUFBQURuSnZkMjVoYldWekxuQnlhVzUwQUFRQUNRQUFBQXB5YjNkekxuUnZkR0ZzQUFRQUNRQUFBQXBqYjJ4ekxuUnZkR0ZzQUFBQS9nQUFBUDQ9In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Picture"],"name":[2],"type":["lgl"],"align":["right"]},{"label":["Currentowner"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Description"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"ABC","2":"NA","3":"ABC President","4":"Brand in Indonesia.","_rn_":"1"},{"1":"Acecook","2":"NA","3":"Acecook","4":"Largest instant noodle brand in Vietnam[2]","_rn_":"2"},{"1":"Aïki noodles","2":"NA","3":"Continental foods","4":"Popular instant noodles in Belgium.","_rn_":"3"},{"1":"Alhami","2":"NA","3":"Olagafood","4":"Brand in Indonesia.","_rn_":"4"},{"1":"Ansungtangmyun","2":"NA","3":"Nongshim","4":"Brand of ramyeon produced in South Korea since 1983, and is the third highest-selling brand of noodles in South Korea as of 2014.[3]","_rn_":"5"},{"1":"Buitoni Instant Noodles","2":"NA","3":"Buitoni","4":"Italian brand owned by Nestlé, now sold under the name Maggi Noodles.[4]","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+</div>
+<div id="data-wrangling" class="section level3">
+<h3>Data Wrangling</h3>
 <!-- rnb-text-end -->
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiU1RBVCAxODQgRmluYWwgUHJvamVjdCAiCmF1dGhvcjogIkppYXJ1aSBGYW4iIApkYXRlOiAiMTIvMTIiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KYGBge3IsIHdhcm5pbmc9RkFMU0UsIG1lc3NhZ2U9RkFMU0V9CiMgY2xlYW4gdXAgUiBlbnZpcm9ubWVudApybSAobGlzdCA9IGxzKCkpCiMgbG9hZCBzb21lIHBhY2thZ2VzCmxpYnJhcnkocmVhZHIpCmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KERhdGFDb21wdXRpbmcpCmxpYnJhcnkoZ2dwbG90MikKbGlicmFyeSh0aWR5cikKbGlicmFyeShsdWJyaWRhdGUpCmBgYAoKIyMgMTogV2hpY2ggaXMgdGhlIE1vc3QgUG9wdWxhciBSYW1lbiBQcm9kdWN0PwoKIyMjIERhdGEgc291cmNlCgpgYGB7cn0KUmFtZW5GaWxlPC0gZmlsZS5jaG9vc2UoKQpgYGAKYGBge3J9ClJhbWVuRGF0YTwtIAogIGRhdGEudGFibGU6OmZyZWFkKFJhbWVuRmlsZSkgJT4lCiAgYXMuZGF0YS5mcmFtZSgpCmBgYApgYGB7cn0Kc3RyKFJhbWVuRGF0YSkKYGBgCmBgYHtyfQpoZWFkKFJhbWVuRGF0YSkKYGBgCmBgYHtyfQpSYW1lbiA8LSAKICBSYW1lbkRhdGElPiUKICBzZWxlY3QoKQpgYGAKCgoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU1RBVCAxODQgRmluYWwgUHJvamVjdCAiCmF1dGhvcjogIkppYXJ1aSBGYW4iIApkYXRlOiAiMTIvMTIiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KYGBge3IsIHdhcm5pbmc9RkFMU0UsIG1lc3NhZ2U9RkFMU0V9CiMgY2xlYW4gdXAgUiBlbnZpcm9ubWVudApybSAobGlzdCA9IGxzKCkpCiMgbG9hZCBzb21lIHBhY2thZ2VzCmxpYnJhcnkocmVhZHIpCmxpYnJhcnkocnZlc3QpCmxpYnJhcnkoeG1sMikKbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkoRGF0YUNvbXB1dGluZykKbGlicmFyeShnZ3Bsb3QyKQpsaWJyYXJ5KHRpZHlyKQpsaWJyYXJ5KGx1YnJpZGF0ZSkKYGBgCgojIyAxOiBXaGljaCBpcyB0aGUgTW9zdCBQb3B1bGFyIFJhbWVuIFByb2R1Y3Q/CgojIyMgRGF0YSBBY2Nlc3MKIyMjIyBQcmltYXJ5IGRhdGEKCmBgYHtyfQpSYW1lbkZpbGU8LSBmaWxlLmNob29zZSgpCmBgYApgYGB7cn0KUmFtZW5EYXRhPC0gCiAgZGF0YS50YWJsZTo6ZnJlYWQoUmFtZW5GaWxlKSAlPiUKICBhcy5kYXRhLmZyYW1lKCkKYGBgCmBgYHtyfQpzdHIoUmFtZW5EYXRhKQpgYGAKYGBge3J9CmhlYWQoUmFtZW5EYXRhKQpgYGAKYGBge3J9ClJhbWVuRGF0YSU+JQogIGdyb3VwX2J5KG5fZGlzdGluY3QoQnJhbmQpKSU+JQogIHN1bW1hcmlzZSgpCgpgYGAKIyMjIyBTdXBwb3J0aW5nIGRhdGEKYGBge3J9CndlYl9wYWdlIDwtICJodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9MaXN0X29mX2luc3RhbnRfbm9vZGxlX2JyYW5kcyIKU2V0T2ZUYWJsZXMgPC0gd2ViX3BhZ2UgJT4lCiAgcmVhZF9odG1sKCkgJT4lCiAgaHRtbF9ub2Rlcyhjc3MgPSAidGFibGUiKSAlPiUKICBodG1sX3RhYmxlKGZpbGwgPSBUUlVFKQpgYGAKYGBge3J9Cmxlbmd0aChTZXRPZlRhYmxlcykKYGBgCmBgYHtyfQpUYWJsZU9mQnJhbmRzIDwtIFNldE9mVGFibGVzW1sxXV0KYGBgCmBgYHtyfQpzdHIoVGFibGVPZkJyYW5kcykKYGBgCmBgYHtyfQpoZWFkKFRhYmxlT2ZCcmFuZHMpCmBgYAoKIyMjIERhdGEgV3JhbmdsaW5nCgoKCgoK</div>
 
 
 
