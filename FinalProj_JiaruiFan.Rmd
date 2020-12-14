@@ -19,9 +19,9 @@ library(lubridate)
 ```
 
 ## 1: Which is the Most Popular Ramen Product?
-My guiding question & purpose of this analysis is to find out which is the most popular Roman product. The reason I come up with such an idea is very simple. I am a huge Roman fan, and I eat roman products several times a week. After consuming all these different types and flavors of Roman products, I will rank them. For example, which has the best packaging, which has the best price, what brand has the most flavor, and so on. Therefore, I wonder what is the rank of Roman product in other people's opinion, and which is the most well-reviewed, highly rated, and best selling.
+My guiding question & purpose of this analysis is to find out which is the most popular Ramen product. The reason I come up with such an idea is very simple. I am a huge Ramen fan, and I eat Ramen products several times a week. After consuming all these different types and flavors of Ramen products, I will rank them. For example, which has the best packaging, which has the best price, what brand has the most flavor, and so on. Therefore, I wonder what is the rank of Ramen product in other people's opinion, and which is the most well-reviewed, highly rated, and best selling.
 
-The biggest challenge that I encountered will be finding a supporting dataset. I misunderstood the instruction when I was doing the EDA, so I did two primary data sources instead of one primary and one supporting. It is kind of hard because this Roman dataset is found in Kaggle, and it is already kind of well analyzed. Therefore, another supporting dataset is not easy to find. I didn't find any suitable dataset from packages that have already loaded in this RStudio.I have searched for a more similar dataset like this Roman data, but they are not suitable for supporting purposes. Then I tried to lower my standards, just look at one attribute. Finally, I found a dataset in Wikipedia that contains a list of Roman Brands. I mainly used it as a tool for my data wangling later in the project.
+The biggest challenge that I encountered will be finding a supporting dataset. I misunderstood the instruction when I was doing the EDA, so I did two primary data sources instead of one primary and one supporting. It is kind of hard because this Ramen dataset is found in Kaggle, and it is already kind of well analyzed. Therefore, another supporting dataset is not easy to find. I didn't find any suitable dataset from packages that have already loaded in this RStudio.I have searched for a more similar dataset like this Ramen data, but they are not suitable for supporting purposes. Then I tried to lower my standards, just look at one attribute. Finally, I found a dataset in Wikipedia that contains a list of Ramen Brands. I mainly used it as a tool for my data wangling later in the project.
 
 ### Data Access
 
@@ -55,16 +55,14 @@ str(RamenData)
 ```{r}
 head(RamenData)
 ```
-```{r}
-tail(RamenData)
-```
+
 #### Supporting data
 * [List of instant noodle brands - Wikipedia](https://en.wikipedia.org/wiki/List_of_instant_noodle_brands)
 This data set is found in Wikipedia.
 
 * The dataset owner is Wikipedia. This page was last edited on 10 December 2020, at 17:19 (UTC). 
 
-* One case is a brand of a Roman noodle prodoct with its current owner and a picture, also with a text description.
+* One case is a brand of a Ramen noodle prodoct with its current owner and a picture, also with a text description.
 
 ##### load data
 ```{r}
@@ -85,85 +83,115 @@ tail(TableOfBrands)
 ```
 
 ### Data Wrangling
+
 ```{r}
+#general data wrangling, select the attributs will be used in later steps
 RamenData <-
   RamenData%>%
+  na.omit(RamenData)%>%  # this removed rows that conatins NA
+  mutate(Stars = as.numeric(Stars), `Review #` = as.numeric(`Review #`))%>%
   select(`Review #`, Brand, Variety, Style, Country, Stars)
 ```
 ```{r}
+#general data wrangling, select the attributs will be used in later steps
 TableOfBrands<-
   TableOfBrands%>%
+  na.omit(TableOfBrands)%>%  # this removed rows that conatins NA
   select(Name, Currentowner)
 ```
 
+Here I joined roman data and the brand data to form a new data table called BigBrands.
 ```{r}
 BigBrands<-
   RamenData%>%
   inner_join(TableOfBrands, by = c("Brand" = "Name"))
+str(BigBrands)
 ```
 
-```{r}
-BigBrands
-```
+Here I filtered out star ratings that are below 4.5
 ```{r}
 ByStars<-
   BigBrands%>%
   select(Brand, Stars, Variety)%>%
   group_by(Brand)%>%
-  filter(Stars>=4.5, Stars != "Unrated")%>%
+  filter(Stars>=4.5)%>%
   arrange(desc(Stars))
+nrow(ByStars)
 ```
+Here I filtered out review numbers that are below 2000
 ```{r}
 ByReview<-
   BigBrands%>%
   filter(`Review #`>=2000)%>%
   select(Variety, Country,Style,`Review #`)
+nrow(ByReview)
 ```
+By join ByStars and ByReview, I get a data set that contains the Ramen product that is highly rated and reviewed
 ```{r}
 Reviews_Satrs<-
   ByStars%>%
   full_join(ByReview, by= "Variety")
-Reviews_Satrs
+head(Reviews_Satrs)
+```
+
+The code below counts the number for each brands
+```{r}
+brandcount <-
+  RamenData%>%
+  group_by(Brand)%>%
+  summarise(count=n())
+```
+Then I created allStars for the total Star rating for each brand, and then I joined the brand and allStars
+```{r}
+StarsBrand <-
+  RamenData%>%
+  group_by(Brand)%>%
+  summarise(allStars = sum(Stars))
+StarsBrand <-
+  brandcount%>%
+  full_join(StarsBrand, by = "Brand")
+```
+Finally, this Stars shows the mean Star rating for each brand
+```{r}
+StarsBrand <-
+  StarsBrand%>%
+  mutate(meanStar = allStars/count)%>%
+  select(Brand,count, meanStar)%>%
+  arrange(desc(meanStar))
+```
+This code below is to find of the most popular style of Ramen product
+```{r}
+StyleReviewed <-
+  ByReview%>%
+  group_by(Style)%>%
+  summarise(count=sum(`Review #`))%>%
+  arrange(desc(count))
+StyleReviewed
 ```
 
 
 ### Data Visualization
 
 ```{r}
-TwoCountry<- 
+plot1 <-
   Reviews_Satrs%>%
-  filter(Country=="USA"| Country=="Japan", Stars != "NA")
-TwoCountry%>%
-  ggplot(aes(x=`Review #`, y = Stars, label = Variety))+geom_point(aes(color=Style))+facet_wrap(~Country)+geom_text()
-```
-```{r}
-
+    filter(Style != "NA")%>%
+    ggplot(aes(x=`Review #`, y = Stars, label = Variety))+geom_point(aes(color=Country))+facet_wrap(~Style)
+plot1
 ```
 
 ```{r}
-
+plot2 <-
+  StarsBrand%>%
+  ggplot() +geom_point(aes(x=count, y = meanStar))
+plot2
 ```
 
 ```{r}
-
+RamenData %>%
+  ggplot(aes(x = Stars, y = `Review #`)) + geom_line()+geom_smooth()
 ```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
 ### Conclusion
 
+Chicken flavor noodle soup is the most popular
 
