@@ -19,6 +19,7 @@ library(lubridate)
 ```
 
 ## 1: Which is the Most Popular Ramen Product?
+My guding question & purpose of this analysis is to find out which is the most popular Roman poduct. The reason I come up such idea is very simple. I am a huge Roman fan, and I eat roman product several times a week. After consuming all these different types and flavors of Roman product, I personally will rank them. For example, which has the best packaging, which has the best price, what brand have the most flavor, and so on. Therefore, I wonder what is the rank of Roman product in other people's opinion, and which is the most well reviewed, highly rated, and best selling.
 
 ### Data Access
 #### Primary data
@@ -106,6 +107,9 @@ Reviews_Satrs<-
 Reviews_Satrs
 ```
 
+
+### Data Visualization
+
 ```{r}
 TwoCountry<- 
   Reviews_Satrs%>%
@@ -140,3 +144,7 @@ TwoCountry%>%
 ```{r}
 
 ```
+
+### Conclusion
+
+
