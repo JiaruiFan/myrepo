@@ -83,7 +83,7 @@ tail(TableOfBrands)
 ```
 
 ### Data Wrangling
-
+#### General
 ```{r}
 #general data wrangling, select the attributs will be used in later steps
 RamenData <-
@@ -96,10 +96,9 @@ RamenData <-
 #general data wrangling, select the attributs will be used in later steps
 TableOfBrands<-
   TableOfBrands%>%
-  na.omit(TableOfBrands)%>%  # this removed rows that conatins NA
   select(Name, Currentowner)
 ```
-
+#### join
 Here I joined roman data and the brand data to form a new data table called BigBrands.
 ```{r}
 BigBrands<-
@@ -112,17 +111,18 @@ Here I filtered out star ratings that are below 4.5
 ```{r}
 ByStars<-
   BigBrands%>%
-  select(Brand, Stars, Variety)%>%
+  select(Brand, Stars, Variety, Country,Style)%>%
   group_by(Brand)%>%
   filter(Stars>=4.5)%>%
   arrange(desc(Stars))
 nrow(ByStars)
 ```
-Here I filtered out review numbers that are below 2000
+
+Here I filtered out review numbers that are below 1000
 ```{r}
 ByReview<-
   BigBrands%>%
-  filter(`Review #`>=2000)%>%
+  filter(`Review #`>=1000)%>%
   select(Variety, Country,Style,`Review #`)
 nrow(ByReview)
 ```
@@ -133,6 +133,19 @@ Reviews_Satrs<-
   full_join(ByReview, by= "Variety")
 head(Reviews_Satrs)
 ```
+Since the current Review_Stars have multiple Country and Style variables, we will make this table cleaner.
+
+#### spread or gather operation
+```{r}
+Reviews_Satrs <-
+Reviews_Satrs%>%
+  gather(key = from, value =Style, Style.x, Style.y,na.rm = TRUE)%>%
+  gather(key = from1, value =Country, Country.x, Country.y,na.rm = TRUE)%>%
+  na.omit(Reviews_Satrs)
+head(Reviews_Satrs)
+```
+
+#### reduction and/or transformation functions
 
 The code below counts the number for each brands
 ```{r}
@@ -152,13 +165,24 @@ StarsBrand <-
   full_join(StarsBrand, by = "Brand")
 ```
 Finally, this Stars shows the mean Star rating for each brand
+#### Function
+```{r}
+getMean <- function(total,count){
+  total/count
+}
+
+```
 ```{r}
 StarsBrand <-
   StarsBrand%>%
-  mutate(meanStar = allStars/count)%>%
+  mutate(meanStar = getMean(allStars,count))%>%
   select(Brand,count, meanStar)%>%
   arrange(desc(meanStar))
+head(StarsBrand)
 ```
+
+
+
 This code below is to find of the most popular style of Ramen product
 ```{r}
 StyleReviewed <-
