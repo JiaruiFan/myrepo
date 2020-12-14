@@ -165,6 +165,7 @@ StarsBrand <-
   full_join(StarsBrand, by = "Brand")
 ```
 Finally, this Stars shows the mean Star rating for each brand
+
 #### Function
 ```{r}
 getMean <- function(total,count){
@@ -180,7 +181,12 @@ StarsBrand <-
   arrange(desc(meanStar))
 head(StarsBrand)
 ```
-
+```{r}
+meanStarsBrand <- 
+  StarsBrand%>%
+  left_join(Reviews_Satrs, by = "Brand")
+meanStarsBrand <- na.omit(meanStarsBrand)
+```
 
 
 This code below is to find of the most popular style of Ramen product
@@ -200,22 +206,32 @@ StyleReviewed
 plot1 <-
   Reviews_Satrs%>%
     filter(Style != "NA")%>%
-    ggplot(aes(x=`Review #`, y = Stars, label = Variety))+geom_point(aes(color=Country))+facet_wrap(~Style)
+    ggplot(aes(x=`Review #`, y = Stars, label = Variety))+geom_point(aes(color=Country))+facet_wrap(~Style)+geom_text(family="Times", fontface="italic", lineheight=.8, size = 3, angle = -60, alpha=0.3) + xlim(1300, 3100)
 plot1
 ```
 
 ```{r}
 plot2 <-
-  StarsBrand%>%
-  ggplot() +geom_point(aes(x=count, y = meanStar))
+  RamenData%>%
+  ggplot(aes(x=`Review #`))+geom_density(fill = "blue", color = "blue", alpha = 0.2)  + geom_density(data = meanStarsBrand, aes(x=`Review #`), fill= "pink",color="pink", alpha = 0.5) +facet_wrap(~Style)
 plot2
 ```
 
 ```{r}
+plot3 <-
 RamenData %>%
-  ggplot(aes(x = Stars, y = `Review #`)) + geom_line()+geom_smooth()
+  ggplot(aes(x = Stars, y = `Review #`)) + geom_smooth() + geom_point(data = meanStarsBrand, aes(x = Stars, y = `Review #`))+facet_wrap(~Style)
+plot3
 ```
 ### Conclusion
+To have a closer look at the finall winner with the highest ranking and most reviews. Also, From StyleReviewed, we know that the most popular package is pack.
 
-Chicken flavor noodle soup is the most popular
+```{r}
+plot4 <-
+  Reviews_Satrs%>%
+    filter(Style == "Pack")%>%
+    ggplot(aes(x=`Review #`, y = Stars, label = Variety))+geom_point(aes(color=Country))+facet_wrap(~Style)+geom_text(size = 3, angle = -60, alpha=0.8) + xlim(1700, 2800) + ylim(4, 6)
+plot4
+```
+The winner is -- 2 Minute Noodles Masala Spicy from India!!
 
