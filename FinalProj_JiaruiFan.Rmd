@@ -19,11 +19,26 @@ library(lubridate)
 ```
 
 ## 1: Which is the Most Popular Ramen Product?
-My guding question & purpose of this analysis is to find out which is the most popular Roman poduct. The reason I come up such idea is very simple. I am a huge Roman fan, and I eat roman product several times a week. After consuming all these different types and flavors of Roman product, I personally will rank them. For example, which has the best packaging, which has the best price, what brand have the most flavor, and so on. Therefore, I wonder what is the rank of Roman product in other people's opinion, and which is the most well reviewed, highly rated, and best selling.
+My guiding question & purpose of this analysis is to find out which is the most popular Roman product. The reason I come up with such an idea is very simple. I am a huge Roman fan, and I eat roman products several times a week. After consuming all these different types and flavors of Roman products, I will rank them. For example, which has the best packaging, which has the best price, what brand has the most flavor, and so on. Therefore, I wonder what is the rank of Roman product in other people's opinion, and which is the most well-reviewed, highly rated, and best selling.
+
+The biggest challenge that I encountered will be finding a supporting dataset. I misunderstood the instruction when I was doing the EDA, so I did two primary data sources instead of one primary and one supporting. It is kind of hard because this Roman dataset is found in Kaggle, and it is already kind of well analyzed. Therefore, another supporting dataset is not easy to find. I didn't find any suitable dataset from packages that have already loaded in this RStudio.I have searched for a more similar dataset like this Roman data, but they are not suitable for supporting purposes. Then I tried to lower my standards, just look at one attribute. Finally, I found a dataset in Wikipedia that contains a list of Roman Brands. I mainly used it as a tool for my data wangling later in the project.
 
 ### Data Access
-#### Primary data
 
+#### Primary data
+* [Ramen Ratings | Kaggle](https://www.kaggle.com/residentmario/ramen-ratings)
+This data set is found in Kaggle.
+
+* The dataset owner is Aleksey Bilogur, he collected the data and maintained it. The last update is 3 years ago. However, Mr.Bilogur states that"This dataset is republished as-is from the original BIG LIST on https://www.theramenrater.com/."
+
+* According to the data description, the inspiration of the dataset owner is from these questions:
+  * What ingredients or flavors are most commonly advertised on ramen package labels?
+  * How do ramen ratings compare against ratings for other food products (like, say, wine)?
+  * How is ramen manufacturing internationally distributed?
+
+* One case is a variety of Ramen with a certain brand, certain number of reviews, its style of packaging(Cup/Bowl/Tray), country, star rating(5-point scale), and if it went on Top 10.
+
+##### Load data
 ```{r}
 RamenFile<- file.choose()
 ```
@@ -32,6 +47,8 @@ RamenData<-
   data.table::fread(RamenFile) %>%
   as.data.frame()
 ```
+##### inspecting data
+
 ```{r}
 str(RamenData)
 ```
@@ -39,30 +56,32 @@ str(RamenData)
 head(RamenData)
 ```
 ```{r}
-RamenData%>%
-  group_by(n_distinct(Brand))%>%
-  summarise()
-
+tail(RamenData)
 ```
 #### Supporting data
+* [List of instant noodle brands - Wikipedia](https://en.wikipedia.org/wiki/List_of_instant_noodle_brands)
+This data set is found in Wikipedia.
+
+* The dataset owner is Wikipedia. This page was last edited on 10 December 2020, at 17:19 (UTC). 
+
+* One case is a brand of a Roman noodle prodoct with its current owner and a picture, also with a text description.
+
+##### load data
 ```{r}
 web_page <- "https://en.wikipedia.org/wiki/List_of_instant_noodle_brands"
 SetOfTables <- web_page %>%
   read_html() %>%
   html_nodes(css = "table") %>%
   html_table(fill = TRUE)
-```
-```{r}
 length(SetOfTables)
-```
-```{r}
 TableOfBrands <- SetOfTables[[1]]
 ```
+##### inspecting data
 ```{r}
-str(TableOfBrands)
+glimpse(TableOfBrands)
 ```
 ```{r}
-head(TableOfBrands)
+tail(TableOfBrands)
 ```
 
 ### Data Wrangling
